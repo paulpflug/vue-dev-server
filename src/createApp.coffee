@@ -1,0 +1,42 @@
+# out: ../lib/createApp.js
+fs = require "fs"
+path = require "path"
+fstools = require "./fstools"
+
+getStructure = (currentPath) ->
+  entries = fs.readdirSync(currentPath)
+  structure = {name: path.basename(currentPath),folders: [],components: []}
+  for entry in entries
+    entryPath = path.resolve(currentPath,entry)
+    if path.extname(entry) == ".vue"
+      structure.components.push name:path.basename(entry,".vue"), path: entryPath
+    else if fstools.isDirectory(entryPath)
+      folder = getStructure(entryPath)
+      if folder.components.length > 0 or folder.folders.length > 0
+        structure.folders.push folder
+  return structure
+getRoutes = (structure,path="") ->
+  routes = ""
+  for folder in structure.folders
+    routes += getRoutes(folder,path+"/"+structure.name)
+  for comp in structure.components
+    routes += "\"#{path}/#{comp.name}\": component: (resolve) -> require([\"#{comp.path}\"],resolve)\n"
+  return routes
+module.exports = (options) ->
+  structure = getStructure(options.workingDir)
+  routes = getRoutes(structure)
+  return """
+  Vue = require "vue"
+  Router = require("#{options.modulesDir}/vue-router")
+  Vue.use Router
+  router = new Router history:true, hashbang: false
+
+  routes =
+    #{routes}
+  app = Vue.extend data: -> availableRoutes: routes
+  router.map routes
+  router.on "/", component: require "#{options.appDir}/main.js"
+  router.afterEach (transition) ->
+    document.title = transition.to.path+ " - vue-dev-server"
+  router.start(app,"#app")
+  """
