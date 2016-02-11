@@ -7,6 +7,7 @@
     "name": "Paul Pflugradt",
     "email": "paul.pflugradt@gmail.com"
   },
+  "license": "MIT",
   "bin": {
     "vue-dev-server": "./index.js"
   },
