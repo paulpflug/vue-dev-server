@@ -72,6 +72,6 @@
     "test:casperjs": "casperjs --verbose test test/index.js",
     "preversion": "npm test",
     "version": "npm run build && git add .",
-    "postversion": "git push && git push --tags && npm run publish"
+    "postversion": "git push && git push --tags && npm publish"
   }
 }
