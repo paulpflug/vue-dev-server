@@ -26,9 +26,13 @@ getRoutes = (structure,path="") ->
 module.exports = (options) ->
   structure = getStructure(options.workingDir)
   routes = getRoutes(structure)
+  try
+    vueRouterPath = require.resolve("vue-router")
+  catch
+    vueRouterPath = "#{options.modulesDir}/vue-router"
   return """
   Vue = require("vue")
-  Router = require("#{options.modulesDir}/vue-router")
+  Router = require("#{vueRouterPath}")
   Vue.use(Router)
   router = new Router({history:true, hashbang: false})
 
