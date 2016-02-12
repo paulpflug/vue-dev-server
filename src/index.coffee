@@ -38,7 +38,12 @@ module.exports = (options) ->
   webconf.plugins.push new webpack.HotModuleReplacementPlugin()
   webconf.plugins.push new webpack.NoErrorsPlugin()
   webconf.entry ?= {}
-  webconf.entry.index = ["#{options.modulesDir}/webpack-hot-middleware/client","#{options.workingDir}/index.js"]
+  try
+    whmpath = require.resolve("webpack-hot-middleware")
+  catch
+    whmpath = "#{options.modulesDir}/webpack-hot-middleware"
+  whmpath += "/client"
+  webconf.entry.index = [whmpath,"#{options.workingDir}/index.js"]
   webconf.output ?= {}
   webconf.output.path = "/out/"
   webconf.output.filename = "[name].js"
