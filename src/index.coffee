@@ -27,7 +27,7 @@ module.exports = (options) ->
 
   exts = ["coffee","js","json"]
   for ext in exts
-    filename = workingDir+"webpack.config.#{ext}"
+    filename = "#{options.workingDir}/webpack.config.#{ext}"
     if fstools.isFile(filename)
       webconf = require filename
       break
