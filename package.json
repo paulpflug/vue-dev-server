@@ -1,7 +1,7 @@
 {
   "name": "vue-dev-server",
   "description": "a small development server for building `vue` components",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "homepage": "https://github.com/paulpflug/",
   "author": {
     "name": "Paul Pflugradt",
@@ -34,7 +34,7 @@
     "webpack-dev-middleware": "^1.5.1",
     "webpack-hot-middleware": "^2.6.4",
     "webpack-koa-dev-middleware": "^0.1.3",
-    "script-runner":"^0.1.4"
+    "script-runner": "^0.1.4"
   },
   "devDependencies": {
     "babel-core": "^6.5.1",
