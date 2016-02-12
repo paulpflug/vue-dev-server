@@ -53,16 +53,7 @@ module.exports = {
     loaders: [
       { test: /\.vue$/, loader: "vue-loader"}
       { test: /\.html$/, loader: "html"}
-      { test: /\.jade$/, loader: "html?jade-loader"}
-      { test: /\.coffee$/, loader: "coffee-loader"}
       { test: /\.css$/, loader: "style-loader!css-loader" }
-      { test: /\.png$/, loader: "url-loader?limit=10000" }
-      { test: /\.jpg$/, loader: "file-loader" }
-      { test: /\.woff(\d*)\??(\d*)$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" }
-      { test: /\.ttf\??(\d*)$/,    loader: "file-loader" }
-      { test: /\.eot\??(\d*)$/,    loader: "file-loader" }
-      { test: /\.svg\??(\d*)$/,    loader: "file-loader" }
-      { test: /\.scss$/, loader: "style!css!sass?sourceMap"}
     ]
 }
 ```
@@ -70,7 +61,7 @@ If you need you own, put a webpack.config.js /.coffee/.json in the `dev` folder.
 
 ### Additional info
 
- - Add the `dev/index.coffee` to your `.gitignore`  
+ - Add the `dev/index.js` to your `.gitignore`  
  - You can create a npm script in your `package.json`, `"scripts": {"dev": "vue-dev-server"}`. The you can call it by `npm run dev`
  - Once your initial development is done create automated unit tests (for example with [Karma.js](https://karma-runner.github.io/))
 

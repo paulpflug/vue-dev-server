@@ -20,24 +20,26 @@ getRoutes = (structure,path="") ->
   for folder in structure.folders
     routes += getRoutes(folder,path+"/"+folder.name)
   for comp in structure.components
-    routes += "  \"#{path}/#{comp.name}\": component: require(\".#{path}/#{comp.name}.vue\")\n"
+    routes += "  \"#{path}/#{comp.name}\": {component: require(\".#{path}/#{comp.name}.vue\")},\n"
     #routes += "  \"#{path}/#{comp.name}\": component: (resolve) -> require([\".#{path}/#{comp.name}.vue\"],resolve)\n"
   return routes
 module.exports = (options) ->
   structure = getStructure(options.workingDir)
   routes = getRoutes(structure)
   return """
-  Vue = require "vue"
+  Vue = require("vue")
   Router = require("#{options.modulesDir}/vue-router")
-  Vue.use Router
-  router = new Router history:true, hashbang: false
+  Vue.use(Router)
+  router = new Router({history:true, hashbang: false})
 
-  routes =
+  routes = {
   #{routes}
-  app = Vue.extend data: -> availableRoutes: routes
-  router.map routes
-  router.on "/", component: require "#{options.appDir}/main.js"
-  router.afterEach (transition) ->
-    document.title = transition.to.path+ " - vue-dev-server"
+  }
+  app = Vue.extend({data: function() {return {availableRoutes: routes}}})
+  router.map(routes)
+  router.on("/", {component: require("#{options.appDir}/main.js")})
+  router.afterEach(function(transition) {
+    document.title = transition.to.path + " - vue-dev-server"
+  })
   router.start(app,"#app")
   """

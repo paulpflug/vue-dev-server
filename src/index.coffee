@@ -12,7 +12,7 @@ require "coffee-script/register"
 fstools = require "./fstools"
 
 rebuildApp = (options) ->
-  fs.writeFileSync("#{options.workingDir}/index.coffee",createApp(options))
+  fs.writeFileSync("#{options.workingDir}/index.js",createApp(options))
 
 module.exports = (options) ->
   workingDir = path.resolve(options.folder)
@@ -38,9 +38,9 @@ module.exports = (options) ->
   webconf.plugins.push new webpack.HotModuleReplacementPlugin()
   webconf.plugins.push new webpack.NoErrorsPlugin()
   webconf.entry ?= {}
-  webconf.entry.index = ["#{options.modulesDir}/webpack-hot-middleware/client","#{options.workingDir}/index.coffee"]
+  webconf.entry.index = ["#{options.modulesDir}/webpack-hot-middleware/client","#{options.workingDir}/index.js"]
   webconf.output ?= {}
-  webconf.output.path = "/"
+  webconf.output.path = "/out/"
   webconf.output.filename = "[name].js"
   compiler = webpack(webconf)
 
@@ -48,7 +48,7 @@ module.exports = (options) ->
 
   koa = require("koa")()
   koa.use serve(workingDir,index:false)
-  koa.use require('webpack-koa-dev-middleware').default(compiler, publicPath:"/", noInfo:true)
+  koa.use require('webpack-koa-dev-middleware').default(compiler, publicPath:"/out/", noInfo:true)
   koa.use (next) ->
     yield require("webpack-hot-middleware")(compiler).bind(null,@req,@res)
     yield next
@@ -62,5 +62,5 @@ module.exports = (options) ->
   chokidar.watch(options.libDir).on "all", (event, path) ->
     rebuildApp(options)
 
-  chokidar.watch(options.workingDir,ignored:/index.coffee/).on "all", (event, path) ->
+  chokidar.watch(options.workingDir,ignored:/index.js/).on "all", (event, path) ->
     rebuildApp(options)
