@@ -8,8 +8,6 @@ ul.dev-server-nav
 <script lang="coffee">
 module.exports =
   props: ["availableRoutes"]
-  compiled: ->
-    console.log @
 </script>
 <style lang="stylus">
 ul.dev-server-nav

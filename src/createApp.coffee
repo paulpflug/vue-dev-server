@@ -18,9 +18,10 @@ getStructure = (currentPath) ->
 getRoutes = (structure,path="") ->
   routes = ""
   for folder in structure.folders
-    routes += getRoutes(folder,path+"/"+structure.name)
+    routes += getRoutes(folder,path+"/"+folder.name)
   for comp in structure.components
-    routes += "\"#{path}/#{comp.name}\": component: (resolve) -> require([\"#{comp.path}\"],resolve)\n"
+    routes += "  \"#{path}/#{comp.name}\": component: require(\".#{path}/#{comp.name}.vue\")\n"
+    #routes += "  \"#{path}/#{comp.name}\": component: (resolve) -> require([\".#{path}/#{comp.name}.vue\"],resolve)\n"
   return routes
 module.exports = (options) ->
   structure = getStructure(options.workingDir)
@@ -32,7 +33,7 @@ module.exports = (options) ->
   router = new Router history:true, hashbang: false
 
   routes =
-    #{routes}
+  #{routes}
   app = Vue.extend data: -> availableRoutes: routes
   router.map routes
   router.on "/", component: require "#{options.appDir}/main.js"

@@ -31,12 +31,29 @@
     "vue-router": "^0.7.10",
     "vueify-insert-css": "^1.0.0",
     "webpack": "^1.12.13",
+    "webpack-dev-middleware": "^1.5.1",
     "webpack-hot-middleware": "^2.6.4",
-    "webpack-koa-dev-middleware": "^0.1.3"
+    "webpack-koa-dev-middleware": "^0.1.3",
+    "script-runner":"^0.1.4"
   },
   "devDependencies": {
+    "babel-core": "^6.5.1",
+    "babel-loader": "^6.2.2",
+    "babel-plugin-transform-runtime": "^6.5.0",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-runtime": "^5.8.35",
+    "casperjs": "^1.1.0-beta5",
+    "coffee-loader": "^0.7.2",
+    "css-loader": "^0.23.1",
     "jade": "^1.11.0",
-    "rimraf": "^2.4.4"
+    "phantomjs-prebuilt": "^2.1.4",
+    "rimraf": "^2.4.4",
+    "script-runner": "^0.1.0",
+    "template-html-loader": "0.0.3",
+    "vue": "^1.0.16",
+    "vue-html-loader": "^1.1.0",
+    "vue-loader": "^8.1.1",
+    "vue-style-loader": "^1.0.0"
   },
   "keywords": [
     "vue",
@@ -47,8 +64,14 @@
   "scripts": {
     "clean": "rimraf lib/ && mkdir lib",
     "prebuild": "npm run clean",
-    "build": "coffee --compile --output lib/ src/*.coffee",
-    "watch": "coffee --compile --watch --output lib/ src/*.coffee",
-    "patch": "npm version patch;npm publish;git push;git push --tags"
+    "build": "coffee --no-header --compile --output lib/ src/*.coffee",
+    "watch": "coffee --no-header --compile --watch --output lib/ src/*.coffee",
+    "dev": "echo dev && ./index.js --folder test/dev/",
+    "test": "run-npm --parallel dev --master \"run-npm 'sleep 1' test:*\"",
+    "test:compile": "coffee --compile --output test/ test/*.coffee",
+    "test:casperjs": "casperjs --verbose test test/index.js",
+    "preversion": "npm test",
+    "version": "npm run build && git add .",
+    "postversion": "git push && git push --tags && npm run publish"
   }
 }

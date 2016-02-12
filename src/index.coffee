@@ -48,7 +48,7 @@ module.exports = (options) ->
 
   koa = require("koa")()
   koa.use serve(workingDir,index:false)
-  koa.use require('webpack-koa-dev-middleware').default(compiler, publicPath:"/",quiet:true)
+  koa.use require('webpack-koa-dev-middleware').default(compiler, publicPath:"/", noInfo:true)
   koa.use (next) ->
     yield require("webpack-hot-middleware")(compiler).bind(null,@req,@res)
     yield next

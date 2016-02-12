@@ -1,9 +1,6 @@
 var __vueify_style__ = require("vueify-insert-css").insert("ul.dev-server-nav{list-style-type:none}.dev-server-nav>li{cursor:pointer}.dev-server-nav>li:hover{color:#008cff}")
 module.exports = {
-  props: ["availableRoutes"],
-  compiled: function() {
-    return console.log(this);
-  }
+  props: ["availableRoutes"]
 };
 
 if (module.exports.__esModule) module.exports = module.exports.default
