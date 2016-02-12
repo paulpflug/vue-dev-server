@@ -39,7 +39,7 @@ module.exports = (options) ->
   webconf.plugins.push new webpack.NoErrorsPlugin()
   webconf.entry ?= {}
   try
-    whmpath = require.resolve("webpack-hot-middleware")
+    whmpath = path.dirname(require.resolve("webpack-hot-middleware"))
   catch
     whmpath = "#{options.modulesDir}/webpack-hot-middleware"
   whmpath += "/client"
