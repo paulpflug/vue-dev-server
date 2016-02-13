@@ -16,7 +16,7 @@ module.exports = (options) ->
   workingDir = path.resolve(options.folder)
   unless fstools.isDirectory(workingDir)
     throw new Error "#{workingDir} doesn't exist or is no directory"
-    
+
   options.workingDir = workingDir
   options.libDir = path.resolve(__dirname,"../lib/")
   options.appDir = path.resolve(__dirname,"../app/")
@@ -42,10 +42,10 @@ module.exports = (options) ->
     whmpath = "#{options.modulesDir}/webpack-hot-middleware/client"
   webconf.output ?= {}
   if options.static
-    webconf.output.path = options.static + "/out/"
+    webconf.output.path = options.static + "/"
   else
-    webconf.output.path = "/out/"
-  webconf.output.filename = "[name].js"
+    webconf.output.path = "/"
+  webconf.output.filename = "[name]_bundle.js"
   rebuildApp(options)
   if options.static
     webconf.entry.index = ["#{options.workingDir}/index.js"]
@@ -71,10 +71,22 @@ module.exports = (options) ->
     webconf.entry.index = [whmpath,"#{options.workingDir}/index.js"]
     webconf.plugins.push new webpack.HotModuleReplacementPlugin()
     compiler = webpack(webconf)
+    wdm = require('webpack-dev-middleware')(compiler, publicPath:"/", noInfo:true,stats:colors:true)
     koa = require("koa")()
     sendfile = require "koa-sendfile"
     koa.use require("koa-static")(workingDir,index:false)
-    koa.use require('webpack-koa-dev-middleware').default(compiler, publicPath:"/out/", noInfo:true,stats:colors:true)
+    koa.use (next) ->
+      ctx = this
+      ended = yield (done) ->
+        wdm ctx.req, {
+          end: (content) ->
+            ctx.body = content
+            done(null,true)
+          setHeader: -> ctx.set.apply(ctx, arguments)
+        }, -> done(null,false)
+      yield next unless ended
+
+
     koa.use (next) ->
       yield require("webpack-hot-middleware")(compiler).bind(null,@req,@res)
       yield next
