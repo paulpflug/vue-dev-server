@@ -32,6 +32,7 @@ module.exports = (options) ->
     vueRouterPath = "#{options.modulesDir}/vue-router"
   return """
   Vue = require("vue")
+  Vue.config.debug = true
   Router = require("#{vueRouterPath}")
   Vue.use(Router)
   router = new Router({history:#{not options.static}, hashbang: #{options.static?}})
