@@ -15,13 +15,16 @@ getStructure = (currentPath) ->
       if folder.components.length > 0 or folder.folders.length > 0
         structure.folders.push folder
   return structure
-getRoutes = (structure,path="") ->
+getRoutes = (structure,rootpath="") ->
   routes = ""
   for folder in structure.folders
-    routes += getRoutes(folder,path+"/"+folder.name)
+    routes += getRoutes(folder,rootpath+"/"+folder.name)
   for comp in structure.components
-    routes += "  \"#{path}/#{comp.name}\": {component: require(\".#{path}/#{comp.name}.vue\")},\n"
-    #routes += "  \"#{path}/#{comp.name}\": component: (resolve) -> require([\".#{path}/#{comp.name}.vue\"],resolve)\n"
+    routeName = rootpath.replace(path.sep,"/")+"/"+comp.name
+    routePath = "."+rootpath+path.sep+comp.name+".vue"
+    routePath = routePath.replace(/\\/g,"\\\\")
+    routes += "  \"#{routeName}\": {component: require(\"#{routePath}\")},\n"
+    #routes += "  \"#{rootpath}/#{comp.name}\": component: (resolve) -> require([\".#{rootpath}/#{comp.name}.vue\"],resolve)\n"
   return routes
 module.exports = (options) ->
   structure = getStructure(options.workingDir)
@@ -29,7 +32,10 @@ module.exports = (options) ->
   try
     vueRouterPath = require.resolve("vue-router")
   catch
-    vueRouterPath = "#{options.modulesDir}/vue-router"
+    vueRouterPath = "#{options.modulesDir}#{path.sep}vue-router"
+  mainPath = options.appDir+path.sep+"main.js"
+  vueRouterPath = vueRouterPath.replace(/\\/g,"\\\\")
+  mainPath = mainPath.replace(/\\/g,"\\\\")
   return """
   Vue = require("vue")
   Vue.config.debug = true
@@ -42,7 +48,7 @@ module.exports = (options) ->
   }
   app = Vue.extend({data: function() {return {availableRoutes: routes}}})
   router.map(routes)
-  router.on("/", {component: require("#{options.appDir}/main.js")})
+  router.on("/", {component: require("#{mainPath}")})
   router.afterEach(function(transition) {
     document.title = transition.to.path + " - vue-dev-server"
   })
