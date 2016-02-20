@@ -60,11 +60,13 @@ module.exports = (options) ->
         cpr options.workingDir, options.static, {
           confirm: true
           filter: (value) ->
-            return value.indexOf("webpack.config") == -1 and value.indexOf("index.js") == -1
+            return value.indexOf("webpack.config") == -1 and
+                   value.indexOf("index.js") == -1
         }, (err) -> throw err if err
         cp = require "cp"
-        cp "#{options.appDir}/index.html", options.static+"/index.html", (err) ->
-          throw err if err
+        cp "#{options.appDir}/index.html",
+            options.static+"/index.html",
+            (err) -> throw err if err
       else
         console.log "please fix the warnings and errors with webpack first"
   else
@@ -98,8 +100,10 @@ module.exports = (options) ->
       console.log "listening on http://#{options.ip}:#{options.port}/"
 
     chokidar = require "chokidar"
-    chokidar.watch(options.libDir).on "all", (event, path) ->
+    chokidar.watch(options.libDir,ignoreInitial: true)
+    .on "all", (event, path) ->
       rebuildApp(options)
 
-    chokidar.watch(options.workingDir,ignored:/index.js/).on "all", (event, path) ->
+    chokidar.watch(options.workingDir,ignoreInitial: true,ignored:/index.js/)
+    .on "all", (event, path) ->
       rebuildApp(options)
