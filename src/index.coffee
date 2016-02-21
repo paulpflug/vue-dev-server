@@ -45,6 +45,7 @@ module.exports = (options) ->
     webconf.output.path = options.static + "/"
   else
     webconf.output.path = "/"
+  webconf.output.publicPath = "/"
   webconf.output.filename = "[name]_bundle.js"
   rebuildApp(options)
   if options.static
