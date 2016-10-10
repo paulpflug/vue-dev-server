@@ -14,6 +14,8 @@ vue-dev-server is a small development server for building `vue` components. It t
 
 ```sh
 npm install --save-dev vue-dev-server
+// vue@1.0
+npm install --save-dev vue-dev-server@1
 
 # dependencies
 npm install --save-dev vue webpack vue-loader
@@ -66,6 +68,9 @@ If you need you own, put a webpack.config.js /.coffee/.json in the `dev` folder.
  - Once your initial development is done create automated unit tests (for example with [Karma.js](https://karma-runner.github.io/))
 
 ## Changelog
+- 2.0.0  
+now compatible with vue 2.0.0  
+
 - 1.0.0  
 same as 0.2.10  
 

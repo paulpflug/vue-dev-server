@@ -47,6 +47,9 @@ module.exports = (options) ->
     webconf.output.path = "/"
   webconf.output.publicPath = "/"
   webconf.output.filename = "[name]_bundle.js"
+  webconf.resolve ?= {}
+  webconf.resolve.alias ?= {}
+  webconf.resolve.alias.vue = 'vue/dist/vue.js'
   rebuildApp(options)
   if options.static
     webconf.entry.index = ["#{options.workingDir}/index.js"]

@@ -23,7 +23,7 @@ getRoutes = (structure,rootpath="") ->
     routeName = rootpath.replace(path.sep,"/")+"/"+comp.name
     routePath = "."+rootpath+path.sep+comp.name+".vue"
     routePath = routePath.replace(/\\/g,"\\\\")
-    routes += "  \"#{routeName}\": {component: require(\"#{routePath}\")},\n"
+    routes += "  {path: \"#{routeName}\", component: require(\"#{routePath}\")},\n"
     #routes += "  \"#{rootpath}/#{comp.name}\": component: (resolve) -> require([\".#{rootpath}/#{comp.name}.vue\"],resolve)\n"
   return routes
 module.exports = (options) ->
@@ -41,16 +41,19 @@ module.exports = (options) ->
   Vue.config.debug = true
   Router = require("#{vueRouterPath}")
   Vue.use(Router)
-  router = new Router({history:false, hashbang: true})
-
-  routes = {
+  routes = [
   #{routes}
-  }
-  app = Vue.extend({data: function() {return {availableRoutes: routes}}})
-  router.map(routes)
-  router.on("/", {component: require("#{mainPath}")})
-  router.afterEach(function(transition) {
-    document.title = transition.to.path + " - vue-dev-server"
+  ]
+  router = new Router({routes:[
+  #{routes}
+    {path:"/",component: require("#{mainPath}")}
+  ]})
+  router.afterEach(function(to) {
+    document.title = to.path + " - vue-dev-server"
   })
-  router.start(app,"#app")
+  app = new Vue({
+    data: function() {return {availableRoutes: routes}},
+    template: "<router-view></router-view>",
+    router: router
+    }).$mount("#app")
   """
