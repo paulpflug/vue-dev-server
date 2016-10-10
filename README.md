@@ -65,6 +65,9 @@ If you need you own, put a webpack.config.js /.coffee/.json in the `dev` folder.
  - You can create a npm script in your `package.json`, `"scripts": {"dev": "vue-dev-server"}`. The you can call it by `npm run dev`
  - Once your initial development is done create automated unit tests (for example with [Karma.js](https://karma-runner.github.io/))
 
+## Changelog
+- 1.0.0  
+same as 0.2.10  
 
 ## License
 Copyright (c) 2015 Paul Pflugradt
