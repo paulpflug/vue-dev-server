@@ -94,7 +94,7 @@ module.exports = (options) ->
       yield require("webpack-hot-middleware")(compiler).bind(null,@req,@res)
       yield next
     koa.use ->
-      yield sendfile.call(@,"#{options.appDir}/index.html")
+      yield sendfile(@,"#{options.appDir}/index.html")
 
     server = require("http").createServer(koa.callback())
     server.listen options.port, ->
@@ -104,7 +104,6 @@ module.exports = (options) ->
     chokidar.watch(options.libDir,ignoreInitial: true)
     .on "all", (event, path) ->
       rebuildApp(options)
-
     chokidar.watch(options.workingDir,ignoreInitial: true,ignored:/index.js/)
     .on "all", (event, path) ->
       rebuildApp(options)
