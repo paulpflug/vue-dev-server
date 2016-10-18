@@ -3,7 +3,7 @@ path = require "path"
 webpack = require "webpack"
 ip = require "ip"
 fs = require "fs"
-
+koaHotDevWebpack = require "koa-hot-dev-webpack"
 createApp = require("./createApp")
 require "coffee-script/register"
 
@@ -13,6 +13,9 @@ rebuildApp = (options) ->
   fs.writeFileSync("#{options.workingDir}/index.js",createApp(options))
 
 module.exports = (options) ->
+  options ?= {}
+  options.port ?= 8080
+  options.folder ?= "dev"
   workingDir = path.resolve(options.folder)
   unless fstools.isDirectory(workingDir)
     throw new Error "#{workingDir} doesn't exist or is no directory"
@@ -33,13 +36,8 @@ module.exports = (options) ->
   webconf ?= require "#{options.appDir}/webpack.config"
   webconf.context = workingDir
   webconf.plugins ?= []
-  webconf.plugins.push new webpack.NoErrorsPlugin()
-  webconf.plugins.push new webpack.optimize.OccurenceOrderPlugin()
   webconf.entry ?= {}
-  try
-    whmpath = require.resolve("webpack-hot-middleware/client")
-  catch
-    whmpath = "#{options.modulesDir}/webpack-hot-middleware/client"
+  webconf.entry.index = ["#{options.workingDir}/index.js"]
   webconf.output ?= {}
   if options.static
     webconf.output.path = options.static + "/"
@@ -52,7 +50,8 @@ module.exports = (options) ->
   webconf.resolve.alias.vue = 'vue/dist/vue.js'
   rebuildApp(options)
   if options.static
-    webconf.entry.index = ["#{options.workingDir}/index.js"]
+    webconf.plugins.push new webpack.NoErrorsPlugin()
+    webconf.plugins.push new webpack.optimize.OccurenceOrderPlugin()
     webconf.plugins.push new webpack.DefinePlugin 'process.env': NODE_ENV: '"production"'
     webconf.plugins.push new webpack.optimize.UglifyJsPlugin compress: warnings: false
     compiler = webpack(webconf)
@@ -74,35 +73,13 @@ module.exports = (options) ->
       else
         console.log "please fix the warnings and errors with webpack first"
   else
-    webconf.entry.index = [whmpath,"#{options.workingDir}/index.js"]
-    webconf.plugins.push new webpack.HotModuleReplacementPlugin()
-    compiler = webpack(webconf)
-    wdm = require('webpack-dev-middleware')(compiler, publicPath:"/", noInfo:true,stats:colors:true)
     koa = require("koa")()
     sendfile = require "koa-sendfile"
     koa.use require("koa-static")(workingDir,index:false)
+    koa.use koaHotDevWebpack(webconf)
     koa.use (next) ->
-      ctx = this
-      ended = yield (done) ->
-        wdm ctx.req, {
-          end: (content) ->
-            ctx.body = content
-            done(null,true)
-          setHeader: -> ctx.set.apply(ctx, arguments)
-        }, -> done(null,false)
-      yield next unless ended
-
-
-    koa.use (next) ->
-      yield require("webpack-hot-middleware")(compiler).bind(null,@req,@res)
-      yield next
-    koa.use ->
       yield sendfile(@,"#{options.appDir}/index.html")
-
-    server = require("http").createServer(koa.callback())
-    server.listen options.port, ->
-      console.log "listening on http://#{options.ip}:#{options.port}/"
-
+      yield next
     chokidar = require "chokidar"
     chokidar.watch(options.libDir,ignoreInitial: true)
     .on "all", (event, path) ->
@@ -110,3 +87,10 @@ module.exports = (options) ->
     chokidar.watch(options.workingDir,ignoreInitial: true,ignored:/index.js/)
     .on "all", (event, path) ->
       rebuildApp(options)
+    if options.koa
+      return koa
+    else
+      server = require("http").createServer(koa.callback())
+      server.listen options.port, ->
+        console.log "listening on http://#{options.ip}:#{options.port}/"
+      return server

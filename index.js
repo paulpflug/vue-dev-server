@@ -10,6 +10,4 @@ program
   .option('-f, --folder <path>', 'root path (default: dev)')
   .option('-s, --static <path>', 'exports a static version')
   .parse(process.argv)
-if (program.port == null) {program.port = 8080}
-if (program.folder == null) {program.folder = "dev"}
 require("./lib/index.js")(program)
