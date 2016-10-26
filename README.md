@@ -38,13 +38,30 @@ Usage: vue-dev-server [options]
   -V, --version        output the version number
   -p, --port <number>  port to use (default: 8080)
   -f, --folder <path>  root path (default: dev)
+  -s, --static <path>  exports a static version
 ```
 
 ### Setting up an environment
 
 By default `vue-dev-server` will look in the `dev` folder for `vue` files.
 Just create a `someName.vue` file there. Require your component from there normally.  
-The environment will then be accessible under `http://localhost:8080/someName`.
+All environments will then be accessible under `http://localhost:8080/`.
+
+##### Example of project layout
+```
+./dev/env1.vue // links your component. Contains an environment to interact with your component.
+./src/comp.vue // your component.
+./comp.js // your component compiled down to ES5 (for examply by `vue-compiler`).
+```
+If you need more examples check out [vue-comps](https://github.com/vue-comps). I'm using `vue-dev-server` for all my components.
+
+### Using static option to create a demo for github pages
+
+in conjuction with [gh-pages](https://github.com/tschaub/gh-pages), creating a demo is as simple as this:
+```sh
+vue-dev-server --static static/ && gh-pages -d static
+```
+just make sure you include the static folder in your .gitignore
 
 ### Setting up webpack
 
@@ -64,8 +81,7 @@ If you need you own, put a webpack.config.js /.coffee/.json in the `dev` folder.
 ### Additional info
 
  - Add the `dev/index.js` to your `.gitignore`  
- - You can create a npm script in your `package.json`, `"scripts": {"dev": "vue-dev-server"}`. The you can call it by `npm run dev`
- - Once your initial development is done create automated unit tests (for example with [Karma.js](https://karma-runner.github.io/))
+ - You can create a npm script in your `package.json`, `"scripts": {"dev": "vue-dev-server"}`. Then you can call it by `npm run dev`
 
 ## Changelog
 - 2.0.0  
