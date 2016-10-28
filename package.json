@@ -43,6 +43,7 @@
     "phantomjs-prebuilt": "^2.1.13",
     "rimraf": "^2.5.4",
     "script-runner": "^0.1.5",
+    "stylus": "^0.54.5",
     "vue": "^2.0.1",
     "vue-compiler": "^2.0.0",
     "vue-html-loader": "^1.2.3",
