@@ -1,5 +1,5 @@
 // out: .
-<template lang="jade">
+<template lang="pug">
 h4 Available routes:
 ul.dev-server-nav
   li(v-for="route in availableRoutes" v-link="route.fullPath") {{route.fullPath}}
@@ -7,7 +7,8 @@ ul.dev-server-nav
 
 <script lang="coffee">
 module.exports =
-  props: ["availableRoutes"]
+  computed:
+    availableRoutes: -> @$parent.availableRoutes
 </script>
 <style lang="stylus">
 ul.dev-server-nav
