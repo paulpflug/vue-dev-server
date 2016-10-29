@@ -11,6 +11,9 @@
 module.exports =
   computed:
     availableRoutes: -> @$parent.availableRoutes
+  mounted: -> 
+    if @availableRoutes.length == 1
+      @$router.push @availableRoutes[0]
 </script>
 
 <style lang="stylus">
