@@ -9,6 +9,9 @@ ul.dev-server-nav
 module.exports =
   computed:
     availableRoutes: -> @$parent.availableRoutes
+  ready: ->
+    if @availableRoutes.length == 1
+      @$router.go @availableRoutes[0].fullPath
 </script>
 <style lang="stylus">
 ul.dev-server-nav

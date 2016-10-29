@@ -5,6 +5,11 @@ module.exports = {
     availableRoutes: function() {
       return this.$parent.availableRoutes;
     }
+  },
+  ready: function() {
+    if (this.availableRoutes.length === 1) {
+      return this.$router.go(this.availableRoutes[0].fullPath);
+    }
   }
 };
 
