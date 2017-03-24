@@ -1,3 +1,5 @@
+# DEPRECATED see [cerijs](https://github.com/cerijs) and [ceri-dev-server](https://github.com/cerijs/ceri-dev-server)
+
 # vue-dev-server
 
 ## Why?

@@ -4,3 +4,4 @@ node_modules
 test/*.js
 test/dev/index.js
 static/
+.vscode
